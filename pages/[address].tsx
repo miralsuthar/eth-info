@@ -1,5 +1,5 @@
 /* eslint-disable @next/next/no-img-element */
-import React, { useEffect } from 'react';
+import React, { Context, ContextType, useEffect } from 'react';
 import { ethers } from 'ethers';
 import { useRouter } from 'next/router';
 import Info from '../components/Info';
@@ -7,6 +7,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import Collection from '../components/Collection';
 import { getEtherInfo, getCollectibles } from './api/etherInfo';
+import { AppContext } from 'next/app';
 
 export default function EthInfo({
   balance,
@@ -78,7 +79,7 @@ export async function getServerSideProps(context: any) {
   const { address } = context.query;
   const { ens, balance, id } = await getEtherInfo(address);
   if (id !== null) {
-    data = await getCollectibles(id!);
+    data = await getCollectibles(context);
   }
 
   return {
