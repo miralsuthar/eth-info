@@ -17,7 +17,7 @@ const Home: NextPage = () => {
   };
 
   return (
-    <div className="flex justify-center items-center h-screen">
+    <div className="flex flex-col gap-10 justify-center items-center h-screen">
       {isLoading ? (
         <Loader type="TailSpin" height={50} color="#6B7280" />
       ) : (
@@ -28,6 +28,12 @@ const Home: NextPage = () => {
           disabled={inputValue === ''}
         />
       )}
+      <h1 className="text-white text-center ">
+        Build with ❤️ by{' '}
+        <a href="https://github.com/miralsuthar">
+          <span className="underline">Miral</span>
+        </a>
+      </h1>
     </div>
   );
 };

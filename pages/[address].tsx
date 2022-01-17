@@ -70,6 +70,12 @@ export default function EthInfo({
             </div>
           ))}
       </Collection>
+      <h1 className="text-white text-center ">
+        Build with ❤️ by{' '}
+        <a href="https://github.com/miralsuthar">
+          <span className="underline">Miral</span>
+        </a>
+      </h1>
     </div>
   );
 }
