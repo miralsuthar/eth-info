@@ -1,26 +1,47 @@
 /* eslint-disable @next/next/no-img-element */
 import React, { Context, ContextType, useEffect } from 'react';
+import { NextPageContext } from 'next';
 import { ethers } from 'ethers';
 import { useRouter } from 'next/router';
 import Info from '../components/Info';
+import Erc20Tokens from '../components/Erc20Tokens';
 import Link from 'next/link';
 import Image from 'next/image';
 import Collection from '../components/Collection';
-import { getEtherInfo, getCollectibles } from './api/etherInfo';
+import {
+  getEtherInfo,
+  getCollectibles,
+  getAllErc20Tokens,
+} from './api/etherInfo';
 import { AppContext } from 'next/app';
+
+type erc20TokenType = {
+  balance: string;
+  decimals: string;
+  logo: string;
+  name: string;
+  symbol: string;
+  thumbnail: string;
+  token_address: string;
+};
 
 export default function EthInfo({
   balance,
   id,
   ens,
   data,
+  erc20Data,
 }: {
   balance: ethers.BigNumber;
   id: string;
   ens: string | null;
   data: [];
+  erc20Data: [];
 }) {
   const router = useRouter();
+  useEffect(() => {
+    console.log('erc20Data: ', erc20Data);
+  }, [erc20Data]);
   if (id === null) {
     return (
       <div className="h-screen flex flex-col justify-center items-center gap-5 bg-gray-900 font-montserrat">
@@ -31,6 +52,7 @@ export default function EthInfo({
       </div>
     );
   }
+
   return (
     <div className="h-screen w-5/6 mx-auto flex flex-col justify-start mt-32 gap-10 items-center">
       <Link href="/">
@@ -53,7 +75,22 @@ export default function EthInfo({
           info={`${balance.toString().substring(0, 8)} ETH`}
         />
       </div>
-      <Collection>
+      <Collection heading="Tokens">
+        {erc20Data &&
+          erc20Data.map((data: erc20TokenType, index) => (
+            <Erc20Tokens
+              key={index}
+              address={ethers.utils.getAddress(data.token_address)}
+              balance={(
+                parseInt(data.balance) /
+                10 ** parseInt(data.decimals)
+              ).toString()}
+              symbol={data.symbol}
+            />
+          ))}
+      </Collection>
+
+      <Collection heading="Collection">
         {data &&
           data.map((data: any) => (
             <div
@@ -70,6 +107,7 @@ export default function EthInfo({
             </div>
           ))}
       </Collection>
+
       <h1 className="text-white text-center ">
         Build with ❤️ by{' '}
         <a href="https://github.com/miralsuthar">
@@ -82,10 +120,12 @@ export default function EthInfo({
 
 export async function getServerSideProps(context: any) {
   let data;
+  let erc20Data;
   const { address } = context.query;
   const { ens, balance, id } = await getEtherInfo(address);
   if (id !== null) {
     data = await getCollectibles(context);
+    erc20Data = await getAllErc20Tokens(id);
   }
 
   return {
@@ -94,6 +134,7 @@ export async function getServerSideProps(context: any) {
       balance,
       id,
       data: data ? data?.collectibles : null,
+      erc20Data,
     },
   };
 }
