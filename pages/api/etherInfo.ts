@@ -54,8 +54,9 @@ export async function getCollectibles(context: any) {
     };
   } catch (error) {
     console.error(error);
+    const collectibles = null;
     return {
-      collectibles: null,
+      collectibles,
     };
   }
 }
