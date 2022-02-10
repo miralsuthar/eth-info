@@ -3,17 +3,17 @@ import React, { Context, ContextType, useEffect } from 'react';
 import { NextPageContext, GetServerSideProps } from 'next';
 import { ethers } from 'ethers';
 import { useRouter } from 'next/router';
-import Info from '../components/Info';
-import Erc20Tokens from '../components/Erc20Tokens';
+import Info from '../../components/Info';
+import Erc20Tokens from '../../components/Erc20Tokens';
 import Link from 'next/link';
 import Image from 'next/image';
-import Collection from '../components/Collection';
+import Collection from '../../components/Collection';
 import Loader from 'react-loader-spinner';
 import {
   getEtherInfo,
   getCollectibles,
   getAllErc20Tokens,
-} from './api/etherInfo';
+} from './../api/etherInfo';
 import { AppContext } from 'next/app';
 
 type erc20TokenType = {
