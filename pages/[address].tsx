@@ -1,6 +1,6 @@
 /* eslint-disable @next/next/no-img-element */
 import React, { Context, ContextType, useEffect } from 'react';
-import { NextPageContext } from 'next';
+import { NextPageContext, GetServerSideProps } from 'next';
 import { ethers } from 'ethers';
 import { useRouter } from 'next/router';
 import Info from '../components/Info';
@@ -8,6 +8,7 @@ import Erc20Tokens from '../components/Erc20Tokens';
 import Link from 'next/link';
 import Image from 'next/image';
 import Collection from '../components/Collection';
+import Loader from 'react-loader-spinner';
 import {
   getEtherInfo,
   getCollectibles,
@@ -91,7 +92,7 @@ export default function EthInfo({
       </Collection>
 
       <Collection heading="Collection">
-        {data &&
+        {data ? (
           data.map((data: any) => (
             <div
               className="bg-gray-500 h-96 flex flex-col gap-2 rounded-md overflow-hidden shadow-nftShadow"
@@ -105,7 +106,12 @@ export default function EthInfo({
               />
               <p className="text-black font-bold text-2xl">{data.name}</p>
             </div>
-          ))}
+          ))
+        ) : (
+          <div>
+            <Loader type="TailSpin" height={50} color="#6B7280" />
+          </div>
+        )}
       </Collection>
 
       <h1 className="text-white text-center ">
@@ -118,7 +124,7 @@ export default function EthInfo({
   );
 }
 
-export async function getServerSideProps(context: any) {
+export async function getServerSideProps<GetServerSideProps>(context: any) {
   let data;
   let erc20Data;
   const { address } = context.query;

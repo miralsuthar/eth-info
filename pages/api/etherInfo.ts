@@ -36,18 +36,28 @@ export async function getCollectibles(context: any) {
     etherscan: process.env.ETHERSCAN_API,
   });
   const id = await provider.resolveName(address);
-  const data = await fetch(`https://api.opensea.io/api/v1/assets?owner=${id}`, {
-    headers: {
-      'User-Agent': context.req.headers['user-agent'],
-    },
-  });
+  try {
+    const data = await fetch(
+      `https://api.opensea.io/api/v1/assets?owner=${id}`,
+      {
+        headers: {
+          'User-Agent': context.req.headers['user-agent'],
+        },
+      }
+    );
 
-  const response = await data.json();
+    const response = await data.json();
 
-  const collectibles = response.assets;
-  return {
-    collectibles,
-  };
+    const collectibles = response.assets;
+    return {
+      collectibles,
+    };
+  } catch (error) {
+    console.error(error);
+    return {
+      collectibles: null,
+    };
+  }
 }
 
 export async function getAllErc20Tokens(address: string) {
