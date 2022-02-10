@@ -35,6 +35,7 @@ export async function getCollectibles(context: any) {
   const provider = ethers.getDefaultProvider(network, {
     etherscan: process.env.ETHERSCAN_API,
   });
+  let collectibles: any;
   const id = await provider.resolveName(address);
   try {
     const data = await fetch(
@@ -48,13 +49,13 @@ export async function getCollectibles(context: any) {
 
     const response = await data.json();
 
-    const collectibles = response.assets;
+    collectibles = response.assets;
     return {
       collectibles,
     };
   } catch (error) {
-    console.error(error);
-    const collectibles = null;
+    console.error('get collectible: ', error);
+    collectibles = null;
     return {
       collectibles,
     };

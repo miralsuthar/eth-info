@@ -1,5 +1,5 @@
 /* eslint-disable @next/next/no-img-element */
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 type Erc20TokensProps = {
   address: string;
@@ -12,14 +12,24 @@ export default function Erc20Tokens({
   symbol,
   address,
 }: Erc20TokensProps) {
-  const [isImage, setIsImage] = useState(true);
+  const [isImage, setIsImage] = useState(false);
+  // const getSymbol = (address: string) => {
+  //   let symbol: string;
+  //   try {
+  //     symbol = `https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/${address}/logo.png`;
+  //     return symbol;
+  //   } catch (error) {
+  //     console.error(error);
+  //     setIsImage(false);
+  //   }
+  // };
   return (
     <div className="flex justify-between  w-full p-6 font-montserrat rounded-md bg-black">
       <div className="flex flex-col gap-2">
         {isImage ? (
           <img
             className="h-10 w-10"
-            src={`https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/${address}/logo.png`}
+            src={'null'}
             alt="/think.png"
             onError={() => setIsImage(false)}
           />
