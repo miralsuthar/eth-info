@@ -1,6 +1,6 @@
 /* eslint-disable @next/next/no-img-element */
 import React, { Context, ContextType, useEffect } from 'react';
-import { NextPageContext, GetServerSideProps } from 'next';
+import { NextPageContext, GetServerSideProps, GetStaticProps } from 'next';
 import { ethers } from 'ethers';
 import { useRouter } from 'next/router';
 import Info from '../components/Info';
@@ -140,7 +140,7 @@ export async function getServerSideProps<GetServerSideProps>(context: any) {
       balance,
       id,
       data: data ? data?.collectibles : null,
-      erc20Data,
+      erc20Data: erc20Data ? erc20Data : null,
     },
   };
 }
