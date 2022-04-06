@@ -1,20 +1,20 @@
 /* eslint-disable @next/next/no-img-element */
-import React, { Context, ContextType, useEffect } from 'react';
-import { NextPageContext, GetServerSideProps, GetStaticProps } from 'next';
-import { ethers } from 'ethers';
-import { useRouter } from 'next/router';
-import Info from '../components/Info';
-import Erc20Tokens from '../components/Erc20Tokens';
-import Link from 'next/link';
-import Image from 'next/image';
-import Collection from '../components/Collection';
-import Loader from 'react-loader-spinner';
+import React, { Context, ContextType, useEffect, useState } from "react";
+import { NextPageContext, GetServerSideProps, GetStaticProps } from "next";
+import { ethers } from "ethers";
+import { useRouter } from "next/router";
+import Info from "../components/Info";
+import Erc20Tokens from "../components/Erc20Tokens";
+import Link from "next/link";
+import Image from "next/image";
+import Collection from "../components/Collection";
+import Loader from "react-loader-spinner";
 import {
   getEtherInfo,
-  getCollectibles,
+  // getCollectibles,
   getAllErc20Tokens,
-} from './api/etherInfo';
-import { AppContext } from 'next/app';
+} from "./api/etherInfo";
+import { AppContext } from "next/app";
 
 type erc20TokenType = {
   balance: string;
@@ -40,8 +40,19 @@ export default function EthInfo({
   erc20Data: [];
 }) {
   const router = useRouter();
+
+  const [collectibles, setCollectibles] = useState<any>([]);
+
   useEffect(() => {
-    console.log('erc20Data: ', erc20Data);
+    getCollectibles(id);
+  }, [id]);
+
+  // useEffect(() => {
+  //   console.log("collectibles: ", collectibles.assets);
+  // }, [collectibles]);
+
+  useEffect(() => {
+    console.log("erc20Data: ", erc20Data);
   }, [erc20Data]);
   if (id === null) {
     return (
@@ -54,10 +65,35 @@ export default function EthInfo({
     );
   }
 
+  async function getCollectibles(id: string) {
+    const network = "homestead";
+    const provider = ethers.getDefaultProvider(network, {
+      etherscan: process.env.ETHERSCAN_API,
+    });
+    let collectibles: any;
+    try {
+      const data = await fetch(
+        `https://api.opensea.io/api/v1/assets?owner=${id}`
+      );
+
+      const response = await data.json();
+
+      collectibles = response;
+      // console.log("Collectibles: in browser ", collectibles);
+      setCollectibles(collectibles.assets);
+    } catch (error) {
+      console.error("get collectible: ", error);
+      collectibles = null;
+      return {
+        collectibles,
+      };
+    }
+  }
+
   return (
     <div className="h-screen w-5/6 mx-auto flex flex-col justify-start mt-32 gap-10 items-center">
       <Link href="/">
-        <a className="text-white w-4/6">{'<Go back'}</a>
+        <a className="text-white w-4/6">{"<Go back"}</a>
       </Link>
       <div className="flex justify-center items-center gap-5">
         <Info
@@ -70,7 +106,7 @@ export default function EthInfo({
         >
           <Image height="30" width="30" src="/copy.png" alt="copy" />
         </Info>
-        <Info name="ens" info={ens ? ens : '-'} />
+        <Info name="ens" info={ens ? ens : "-"} />
         <Info
           name="balance"
           info={`${balance.toString().substring(0, 8)} ETH`}
@@ -92,8 +128,8 @@ export default function EthInfo({
       </Collection>
 
       <Collection heading="Collection">
-        {data ? (
-          data.map((data: any) => (
+        {collectibles ? (
+          collectibles.map((data: any) => (
             <div
               className="bg-gray-500 h-96 flex flex-col gap-2 rounded-md overflow-hidden shadow-nftShadow"
               key={data.id}
@@ -115,7 +151,7 @@ export default function EthInfo({
       </Collection>
 
       <h1 className="text-white text-center ">
-        Build with ❤️ by{' '}
+        Build with ❤️ by{" "}
         <a href="https://github.com/miralsuthar">
           <span className="underline">Miral</span>
         </a>
@@ -130,7 +166,7 @@ export async function getServerSideProps<GetServerSideProps>(context: any) {
   const { address } = context.query;
   const { ens, balance, id } = await getEtherInfo(address);
   if (id !== null) {
-    data = await getCollectibles(context);
+    // data = await getCollectibles(context);
     erc20Data = await getAllErc20Tokens(id);
   }
 
@@ -139,7 +175,7 @@ export async function getServerSideProps<GetServerSideProps>(context: any) {
       ens,
       balance,
       id,
-      data: data ? data?.collectibles : null,
+      // data: data ? data?.collectibles : null,
       erc20Data: erc20Data ? erc20Data : null,
     },
   };
