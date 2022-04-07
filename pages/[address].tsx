@@ -1,6 +1,11 @@
 /* eslint-disable @next/next/no-img-element */
 import React, { Context, ContextType, useEffect, useState } from "react";
-import { NextPageContext, GetServerSideProps, GetStaticProps } from "next";
+import {
+  NextPageContext,
+  GetServerSideProps,
+  GetStaticProps,
+  GetStaticPaths,
+} from "next";
 import { ethers } from "ethers";
 import { useRouter } from "next/router";
 import Info from "../components/Info";
@@ -47,10 +52,6 @@ export default function EthInfo({
     getCollectibles(id);
   }, [id]);
 
-  // useEffect(() => {
-  //   console.log("collectibles: ", collectibles.assets);
-  // }, [collectibles]);
-
   useEffect(() => {
     console.log("erc20Data: ", erc20Data);
   }, [erc20Data]);
@@ -79,7 +80,6 @@ export default function EthInfo({
       const response = await data.json();
 
       collectibles = response;
-      // console.log("Collectibles: in browser ", collectibles);
       setCollectibles(collectibles.assets);
     } catch (error) {
       console.error("get collectible: ", error);
@@ -160,10 +160,18 @@ export default function EthInfo({
   );
 }
 
-export async function getServerSideProps<GetServerSideProps>(context: any) {
+export async function getStaticPaths<GetStaticPaths>(address: string) {
+  return {
+    paths: [],
+    fallback: "blocking",
+  };
+}
+
+export async function getStaticProps<GetStaticProps>(context: any) {
   let data;
   let erc20Data;
-  const { address } = context.query;
+  // console.log("context: ", context.params.address);
+  const { address } = context.params;
   const { ens, balance, id } = await getEtherInfo(address);
   if (id !== null) {
     // data = await getCollectibles(context);
