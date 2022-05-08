@@ -1,11 +1,6 @@
 /* eslint-disable @next/next/no-img-element */
 import React, { Context, ContextType, useEffect, useState } from "react";
-import {
-  NextPageContext,
-  GetServerSideProps,
-  GetStaticProps,
-  GetStaticPaths,
-} from "next";
+
 import { ethers } from "ethers";
 import { useRouter } from "next/router";
 import Info from "../components/Info";
@@ -19,7 +14,8 @@ import {
   // getCollectibles,
   getAllErc20Tokens,
 } from "./api/etherInfo";
-import { AppContext } from "next/app";
+import useTokenPrice from "../hooks/useTokenPrice";
+import { motion } from "framer-motion";
 
 type erc20TokenType = {
   balance: string;
@@ -91,25 +87,21 @@ export default function EthInfo({
   }
 
   return (
-    <div className="h-screen w-5/6 mx-auto flex flex-col justify-start mt-32 gap-10 items-center">
-      <Link href="/">
-        <a className="text-white w-4/6">{"<Go back"}</a>
-      </Link>
-      <div className="flex justify-center items-center gap-5">
+    <div className="h-screen w-5/6 mx-auto flex flex-col justify-start mt-32 gap-10 items-center ">
+      <div className="flex w-3/6 bg-white rounded-xl justify-around items-center gap-5 font-poppins font-semibold">
         <Info
           name="address"
-          info={`${id.substring(0, 6)}...${id.substr(id.length - 4)}`}
+          info={`${id.substring(0, 4)}...${id.substr(id.length - 3)}`}
           buttonDisabled={false}
           onClickHandler={() => {
             navigator.clipboard.writeText(id);
           }}
-        >
-          <Image height="30" width="30" src="/copy.png" alt="copy" />
-        </Info>
+          className="hover:text-[#CC3A88] cursor-pointer"
+        />
         <Info name="ens" info={ens ? ens : "-"} />
         <Info
           name="balance"
-          info={`${balance.toString().substring(0, 8)} ETH`}
+          info={`${balance.toString().substring(0, 5)} eth`}
         />
       </div>
       <Collection heading="Tokens">
@@ -123,6 +115,7 @@ export default function EthInfo({
                 10 ** parseInt(data.decimals)
               ).toString()}
               symbol={data.symbol}
+              name={data.name}
             />
           ))}
       </Collection>
@@ -131,16 +124,15 @@ export default function EthInfo({
         {collectibles ? (
           collectibles.map((data: any) => (
             <div
-              className="bg-gray-500 h-96 flex flex-col gap-2 rounded-md overflow-hidden shadow-nftShadow"
+              className="bg-gray-500 w-52 rounded-md overflow-hidden"
               key={data.id}
             >
               <img
                 onClick={() => router.push(data.image_url)}
-                className="h-5/6 w-full cursor-pointer "
+                className="h-full w-full cursor-pointer object-fill "
                 src={data.image_url}
                 alt="nft_image"
               />
-              <p className="text-black font-bold text-2xl">{data.name}</p>
             </div>
           ))
         ) : (
@@ -150,10 +142,10 @@ export default function EthInfo({
         )}
       </Collection>
 
-      <h1 className="text-white text-center ">
+      <h1 className="text-center font-semibold text-tertiary">
         Build with ❤️ by{" "}
         <a href="https://github.com/miralsuthar">
-          <span className="underline">Miral</span>
+          <span className="text-primary">miral</span>
         </a>
       </h1>
     </div>
