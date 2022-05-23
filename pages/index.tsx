@@ -18,7 +18,7 @@ const Home: NextPage = () => {
 
   return (
     <div className="flex flex-col justify-center items-center h-screen font-poppins gap-20">
-      <h1 className="font-semibold text-4xl text-primary">
+      <h1 className="font-semibold text-2xl sm:text-4xl text-primary">
         <span className="text-tertiary">Your</span> ethereum information
       </h1>
       {isLoading ? (

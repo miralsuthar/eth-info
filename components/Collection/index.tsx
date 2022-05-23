@@ -18,7 +18,7 @@ export default function Collection({
     <motion.div
       layout
       transition={{ layout: { duration: 0.5, type: "spring" } }}
-      className="w-[504px] bg-white text-center relative rounded-md font-poppins p-4"
+      className="w-[350px] sm:w-[504px] bg-white text-center relative rounded-md font-poppins p-4"
     >
       <motion.div
         className="bg-tertiary cursor-pointer w-max py-3 px-3 rounded-full flex justify-center items-center absolute left-2/4 -bottom-4 -translate-x-1/2"

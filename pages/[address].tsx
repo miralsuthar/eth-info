@@ -88,7 +88,7 @@ export default function EthInfo({
 
   return (
     <div className="h-screen w-5/6 mx-auto flex flex-col justify-start mt-32 gap-10 items-center ">
-      <div className="flex w-3/6 bg-white rounded-xl justify-around items-center gap-5 font-poppins font-semibold">
+      <div className="flex w-fit px-3 bg-white rounded-xl justify-around items-center gap-5 font-poppins font-semibold">
         <Info
           name="address"
           info={`${id.substring(0, 4)}...${id.substr(id.length - 3)}`}
